@@ -7,8 +7,8 @@
                 class="brand-link"
                 @click="closeMenu"
             >
-                <PhPlanet :size="32" />
-
+                <img v-if="logoOk" class="brand-logo" :src="brandLogoSrc" alt="SpaceShop logo" @error="onLogoError" />
+                <PhPlanet v-else :size="32" />
                 <span>SpaceShop</span>
             </router-link>
 
@@ -113,6 +113,11 @@ const cartCount = computed(() => cart.count.value)
 function logout() {
   session.setAccessToken(null)
 }
+
+// Brand logo
+const brandLogoSrc = '/images/logo-astronaut.png' // place ton image ici: public/images/logo-astronaut.png
+const logoOk = ref(true)
+function onLogoError() { logoOk.value = false }
 </script>
 
 <style scoped>
@@ -153,6 +158,8 @@ function logout() {
         color: white;
         transition: all 0.2s ease;
     }
+
+    .brand-logo { width: 32px; height: 32px; object-fit: contain; display: block }
 
     .brand-link:hover {
         color: #87CEEB;
