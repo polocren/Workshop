@@ -114,8 +114,8 @@ function logout() {
   session.setAccessToken(null)
 }
 
-// Brand logo
-const brandLogoSrc = '/images/logo-astronaut.png' // place ton image ici: public/images/logo-astronaut.png
+// Brand logo (configurable via VITE_BRAND_LOGO)
+const brandLogoSrc = ((import.meta as any).env?.VITE_BRAND_LOGO) || '/images/logo-astronaut.png'
 const logoOk = ref(true)
 function onLogoError() { logoOk.value = false }
 </script>
