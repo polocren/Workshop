@@ -27,6 +27,16 @@
                         <span>Carte 3D</span>
                     </router-link>
                 </li>
+                <li v-if="isLogged">
+                    <router-link 
+                        to="/my-planets" 
+                        class="nav-link"
+                        :class="{ 'is-active': $route.path.startsWith('/my-planets') }"
+                        @click="closeMenu"
+                    >
+                        <span>Mes planètes</span>
+                    </router-link>
+                </li>
                 
                 <!-- Catalogue optionnel: garder un lien vers la liste -->
                 <li>

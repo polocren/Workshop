@@ -27,6 +27,21 @@ router.post('/', requireAuth, async (req, res) => {
   }
 })
 
+// Offrir une planète (par email)
+router.post('/gift', requireAuth, async (req, res) => {
+  try {
+    const { planetId, email } = req.body || {}
+    if (!planetId || !email) return res.status(400).json({ success: false, error: 'planetId et email requis' })
+    const purchaseService = require('../services/purchaseService')
+    const result = await purchaseService.giftPlanet({ planetId, fromUserId: req.user.id, recipientEmail: email })
+    res.status(201).json({ success: true, data: result })
+  } catch (err) {
+    const message = err.message || 'Erreur lors du cadeau'
+    const status = message.includes('propriétaire') ? 403 : message.includes('Service') ? 500 : 400
+    res.status(status).json({ success: false, error: message })
+  }
+})
+
 // Checkout panier (plusieurs planètes)
 router.post('/checkout', requireAuth, async (req, res) => {
   try {

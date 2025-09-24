@@ -5,6 +5,7 @@ import PlanetForm from '../components/PlanetForm.vue'
 import Login from '../components/Login.vue'
 import Signup from '../components/Signup.vue'
 import Cart from '../components/Cart.vue'
+import MyPlanets from '../components/MyPlanets.vue'
 
 const routes = [
   {
@@ -20,6 +21,12 @@ const routes = [
     name: 'Cart',
     component: Cart,
     meta: { title: 'Panier' }
+  },
+  {
+    path: '/my-planets',
+    name: 'MyPlanets',
+    component: MyPlanets,
+    meta: { title: 'Mes planètes' }
   },
   {
     path: '/login',

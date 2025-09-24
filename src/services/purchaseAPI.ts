@@ -20,6 +20,18 @@ export default {
     return res.json()
   },
 
+  async giftPlanet(planetId: string, email: string, accessToken: string) {
+    const res = await fetch(`${API_BASE_URL}/purchases/gift`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`
+      },
+      body: JSON.stringify({ planetId, email })
+    })
+    return res.json()
+  },
+
   async checkout(planetIds: string[], accessToken: string) {
     const res = await fetch(`${API_BASE_URL}/purchases/checkout`, {
       method: 'POST',
