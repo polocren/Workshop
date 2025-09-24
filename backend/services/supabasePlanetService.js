@@ -62,6 +62,36 @@ class SupabasePlanetService {
     };
   }
 
+  // Construire un patch de mise à jour uniquement avec les champs fournis
+  formatPlanetUpdateForDB(updateData) {
+    const patch = {};
+    if (Object.prototype.hasOwnProperty.call(updateData, 'name')) patch.name = updateData.name;
+    if (Object.prototype.hasOwnProperty.call(updateData, 'type')) patch.type = updateData.type;
+    if (Object.prototype.hasOwnProperty.call(updateData, 'distance')) patch.distance = updateData.distance;
+    if (Object.prototype.hasOwnProperty.call(updateData, 'diameter')) patch.diameter = updateData.diameter;
+    if (Object.prototype.hasOwnProperty.call(updateData, 'description')) patch.description = updateData.description;
+    if (Object.prototype.hasOwnProperty.call(updateData, 'color')) patch.color = updateData.color;
+    if (Object.prototype.hasOwnProperty.call(updateData, 'size')) patch.size = updateData.size;
+    if (Object.prototype.hasOwnProperty.call(updateData, 'image')) patch.image = updateData.image;
+    if (Object.prototype.hasOwnProperty.call(updateData, 'discoveryDate')) patch.discovery_date = updateData.discoveryDate;
+    if (Object.prototype.hasOwnProperty.call(updateData, 'moons')) patch.moons = updateData.moons;
+    if (Object.prototype.hasOwnProperty.call(updateData, 'orbitalPeriod')) patch.orbital_period = updateData.orbitalPeriod;
+    if (Object.prototype.hasOwnProperty.call(updateData, 'temperature')) patch.temperature = updateData.temperature;
+    if (Object.prototype.hasOwnProperty.call(updateData, 'composition')) patch.composition = updateData.composition;
+    if (Object.prototype.hasOwnProperty.call(updateData, 'price')) patch.price = updateData.price;
+    if (Object.prototype.hasOwnProperty.call(updateData, 'isAvailable')) patch.is_available = updateData.isAvailable;
+    if (Object.prototype.hasOwnProperty.call(updateData, 'ownerId')) patch.owner_id = updateData.ownerId;
+
+    // Position: uniquement si explicitement fournie
+    if (updateData.position && typeof updateData.position === 'object') {
+      if (Object.prototype.hasOwnProperty.call(updateData.position, 'x')) patch.position_x = updateData.position.x;
+      if (Object.prototype.hasOwnProperty.call(updateData.position, 'y')) patch.position_y = updateData.position.y;
+      if (Object.prototype.hasOwnProperty.call(updateData.position, 'z')) patch.position_z = updateData.position.z;
+    }
+
+    return patch;
+  }
+
   // Récupérer toutes les planètes
   async getAllPlanets() {
     try {
@@ -160,7 +190,7 @@ class SupabasePlanetService {
         }
       }
 
-      const formattedData = this.formatPlanetForDB(updateData);
+      const formattedData = this.formatPlanetUpdateForDB(updateData);
       
       const { data, error } = await this.supabase
         .from('planets')

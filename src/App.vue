@@ -14,9 +14,11 @@ const showFooter = computed(() => route.path !== '/')
 <template>
     <MainNavigation />
     <main class="main-content">
-      <transition name="fade-slide" mode="out-in">
-        <router-view />
-      </transition>
+      <router-view v-slot="{ Component }">
+        <transition name="fade-slide" mode="out-in">
+          <component :is="Component" />
+        </transition>
+      </router-view>
     </main>
     <ToastHost />
     <AppFooter v-if="showFooter" />

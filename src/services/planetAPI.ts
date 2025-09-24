@@ -1,4 +1,5 @@
 import type { Planet } from '../types/Planet'
+import session from './session'
 
 const API_BASE_URL = (import.meta as any).env?.VITE_API_BASE_URL || 'http://localhost:3001/api'
 
@@ -48,11 +49,12 @@ class PlanetAPI {
   // Créer une nouvelle planète
   async createPlanet(planetData: Omit<Planet, 'id' | 'mesh'>): Promise<Planet> {
     try {
+      const token = session.getAccessToken()
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+      if (token) headers.Authorization = `Bearer ${token}`
       const response = await fetch(`${API_BASE_URL}/planets`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers,
         body: JSON.stringify(planetData)
       })
       
@@ -63,20 +65,22 @@ class PlanetAPI {
       }
       
       return result.data
-    } catch (error) {
+    } catch (error: any) {
       console.error('Erreur API - createPlanet:', error)
-      throw new Error('Impossible de créer la planète')
+      const msg = error?.message ? `Impossible de créer la planète: ${error.message}` : 'Impossible de créer la planète'
+      throw new Error(msg)
     }
   }
 
   // Mettre à jour une planète
   async updatePlanet(id: string, planetData: Partial<Planet>): Promise<Planet> {
     try {
+      const token = session.getAccessToken()
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+      if (token) headers.Authorization = `Bearer ${token}`
       const response = await fetch(`${API_BASE_URL}/planets/${id}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers,
         body: JSON.stringify(planetData)
       })
       
@@ -87,17 +91,22 @@ class PlanetAPI {
       }
       
       return result.data
-    } catch (error) {
+    } catch (error: any) {
       console.error('Erreur API - updatePlanet:', error)
-      throw new Error('Impossible de mettre à jour la planète')
+      const msg = error?.message ? `Impossible de mettre à jour la planète: ${error.message}` : 'Impossible de mettre à jour la planète'
+      throw new Error(msg)
     }
   }
 
   // Supprimer une planète
   async deletePlanet(id: string): Promise<Planet> {
     try {
+      const token = session.getAccessToken()
+      const headers: Record<string, string> = {}
+      if (token) headers.Authorization = `Bearer ${token}`
       const response = await fetch(`${API_BASE_URL}/planets/${id}`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        headers
       })
       
       const result: ApiResponse<Planet> = await response.json()
@@ -107,9 +116,10 @@ class PlanetAPI {
       }
       
       return result.data
-    } catch (error) {
+    } catch (error: any) {
       console.error('Erreur API - deletePlanet:', error)
-      throw new Error('Impossible de supprimer la planète')
+      const msg = error?.message ? `Impossible de supprimer la planète: ${error.message}` : 'Impossible de supprimer la planète'
+      throw new Error(msg)
     }
   }
 

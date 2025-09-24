@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const planetService = require('../services/unifiedPlanetService');
+const { requireAdmin } = require('../middleware/admin')
 
 // Middleware de validation pour les données de planète
 const validatePlanetData = (req, res, next) => {
@@ -64,9 +65,9 @@ router.get('/:id', async (req, res) => {
 const PURCHASE_ONLY = process.env.PURCHASE_ONLY === 'true'
 
 // POST /api/planets - Créer une nouvelle planète (désactivé en mode achat)
-router.post('/', validatePlanetData, async (req, res) => {
+router.post('/', requireAdmin, validatePlanetData, async (req, res) => {
   if (PURCHASE_ONLY) {
-    return res.status(405).json({ success: false, error: 'Création désactivée (mode achat uniquement)' })
+    // Même en mode achat, on autorise l'admin
   }
   try {
     const newPlanet = await planetService.createPlanet(req.body);
@@ -86,9 +87,9 @@ router.post('/', validatePlanetData, async (req, res) => {
 });
 
 // PUT /api/planets/:id - Mettre à jour une planète (désactivé en mode achat)
-router.put('/:id', async (req, res) => {
+router.put('/:id', requireAdmin, async (req, res) => {
   if (PURCHASE_ONLY) {
-    return res.status(405).json({ success: false, error: 'Mise à jour désactivée (mode achat uniquement)' })
+    // Même en mode achat, on autorise l'admin
   }
   try {
     const { id } = req.params;
@@ -115,9 +116,9 @@ router.put('/:id', async (req, res) => {
 });
 
 // DELETE /api/planets/:id - Supprimer une planète (désactivé en mode achat)
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', requireAdmin, async (req, res) => {
   if (PURCHASE_ONLY) {
-    return res.status(405).json({ success: false, error: 'Suppression désactivée (mode achat uniquement)' })
+    // Même en mode achat, on autorise l'admin
   }
   try {
     const { id } = req.params;

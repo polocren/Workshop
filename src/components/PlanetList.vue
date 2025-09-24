@@ -3,7 +3,9 @@
 		<!-- Header avec titre et bouton d'ajout -->
 		<div class="header">
 			<h1>Gestion des Planètes</h1>
-			<!-- Bouton d'ajout retiré en mode achat -->
+			<div v-if="isAdmin" class="header-actions">
+				<button class="add-btn" @click="navigateToAdd">Ajouter une planète</button>
+			</div>
 		</div>
 
 		<!-- Barre de recherche -->
@@ -84,6 +86,9 @@
 					>
 						Voir
 					</button>
+					<!-- Admin actions -->
+					<button v-if="isAdmin" @click="editPlanet(planet)">Modifier</button>
+					<button v-if="isAdmin" @click="deletePlanet(planet)" class="btn-delete">Supprimer</button>
 				</div>
 			</div>
 		</div>
@@ -96,9 +101,10 @@
 				Aucun résultat pour "{{ searchQuery }}"
 			</p>
 			<p v-else>
-				Commencez par ajouter votre première planète !
+				<span v-if="isAdmin">Commencez par ajouter votre première planète !</span>
+				<span v-else>Aucune planète disponible pour le moment.</span>
 			</p>
-			<button @click="navigateToAdd" class="btn btn-primary">
+			<button v-if="isAdmin" @click="navigateToAdd" class="btn btn-primary">
 				Ajouter une planète
 			</button>
 		</div>
@@ -113,6 +119,9 @@ import { cart } from '../services/cart'
 import { useRouter } from 'vue-router'
 import planetAPI from '../services/planetAPI'
 import type { Planet } from '../types/Planet'
+import authAPI from '../services/authAPI'
+import session from '../services/session'
+import toast from '../services/toast'
 
 const router = useRouter()
 
@@ -122,7 +131,7 @@ const loading = ref(false)
 const error = ref('')
 const searchQuery = ref('')
 const debouncedQuery = ref('')
-// Suppression/modification désactivées
+const isAdmin = ref(false)
 
 // Planètes filtrées selon la recherche
 const filteredPlanets = computed(() => {
@@ -156,7 +165,34 @@ const refreshList = () => {
 	loadPlanets()
 }
 
-// Navigation vers ajout
+// Admin only helpers
+const ADMIN_EMAIL = ((import.meta as any).env?.VITE_ADMIN_EMAIL || 'paulcren@gmail.com').toLowerCase()
+
+async function checkAdmin() {
+  try {
+    const token = session.getAccessToken()
+    if (!token) return
+    const res = await authAPI.me(token)
+    const email = res?.data?.email?.toLowerCase?.()
+    isAdmin.value = !!email && email === ADMIN_EMAIL
+  } catch (e) {
+    isAdmin.value = false
+  }
+}
+
+const navigateToAdd = () => router.push('/planets/new')
+const editPlanet = (planet: Planet) => router.push(`/planets/${planet.id}/edit`)
+async function deletePlanet(planet: Planet) {
+  try {
+    const ok = window.confirm(`Supprimer la planète "${planet.name}" ?`)
+    if (!ok) return
+    await planetAPI.deletePlanet(planet.id)
+    toast.success('Planète supprimée')
+    await loadPlanets()
+  } catch (e: any) {
+    toast.error(e?.message || 'Suppression impossible')
+  }
+}
 // Voir la planète dans l'espace 3D
 const viewInSpace = (planet: any) => {
 	// Stocker la planète sélectionnée et naviguer vers la carte 3D
@@ -173,6 +209,7 @@ const handleImageError = (event: Event) => {
 // Initialisation
 onMounted(() => {
     loadPlanets()
+    checkAdmin()
 })
 
 // Debounce recherche
@@ -196,23 +233,43 @@ const addToCart = (planet: Planet) => {
 
 /* Header */
 .header {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
 
-	height: 40vh;
+  margin: 30px 0 16px;
+  padding-bottom: 10px;
+  padding-top: 70px;
 
-	margin-bottom: 30px;
-	padding-bottom: 20px;
-	padding-top: 70px;
-	
-	border-bottom: 2px solid #333;
+  border-bottom: 1px solid #333;
 
-	h1 {
-		color: #fff;
-		margin: 0;
-		font-size: 2.5rem;
-	}
+  h1 {
+    color: #fff;
+    margin: 0;
+    font-size: 2.1rem;
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+  }
+
+  .add-btn {
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.1);
+    border: .5px solid rgba(255, 255, 255, 0.3);
+    border-radius: 5px;
+    color: #fff;
+    font-size: .875rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .add-btn:hover {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.3);
+  }
 }
 
 /* Barre de recherche */
@@ -408,39 +465,38 @@ const addToCart = (planet: Planet) => {
 
 /* Actions */
 .planet-actions {
-	display: flex;
-	/* gap: 8px; */
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  border-top: .5px solid rgba(255, 255, 255, 0.2);
+}
 
-	button {
-		flex: 1;
+.planet-actions button {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  background-color: transparent;
+  border: none;
+  color: #fff;
+  font-size: .78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .8px;
+  transition: all .2s ease;
+  cursor: pointer;
+  border-right: .5px solid rgba(255, 255, 255, 0.12);
+}
 
-		padding: 12px 30px;
+.planet-actions button:nth-child(2n) {
+  border-right: none;
+}
 
-		background-color: transparent;
-		border: none;
-		border-top: .5px solid rgba(255, 255, 255, 0.2);
+.planet-actions button:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
 
-		color: white;
-		font-size: .8rem;
-		font-weight: 600;
-		text-transform: uppercase;
-		letter-spacing: 1px;
-
-		transition: all 0.3s ease;
-
-		cursor: pointer;
-
-		&.btn-delete {
-			&:hover {
-				color: #FF5252;
-				background-color: rgba(255, 82, 82, 0.1);
-			}		
-		}
-
-		&:hover {
-			background: rgba(255, 255, 255, 0.1);
-		}
-	}
+.planet-actions .btn-delete:hover {
+  color: #FF5252;
+  background-color: rgba(255, 82, 82, 0.08);
 }
 
 /* État vide */

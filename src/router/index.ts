@@ -42,6 +42,18 @@ const routes = [
     }
   },
   {
+    path: '/planets/new',
+    name: 'PlanetCreate',
+    component: PlanetForm,
+    meta: { title: 'Ajouter une planète' }
+  },
+  {
+    path: '/planets/:id/edit',
+    name: 'PlanetEdit',
+    component: PlanetForm,
+    meta: { title: 'Modifier une planète' }
+  },
+  {
     // Route de fallback pour les pages non trouvées
     path: '/:pathMatch(.*)*',
     redirect: '/'

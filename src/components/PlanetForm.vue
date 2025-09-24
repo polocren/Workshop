@@ -74,17 +74,18 @@
         </div>
 
         <div class="form-group">
-          <label for="imageUrl">URL de l'image</label>
+          <label for="imageUrl">Image</label>
           <input
             id="imageUrl"
             v-model="form.imageUrl"
-            type="url"
+            type="text"
             class="form-input"
-            placeholder="https://exemple.com/image.jpg"
+            placeholder="/images/planets/neptune.svg ou https://..."
           />
+          <small class="hint">Astuce: mets un chemin du dossier public, ex: <code>/images/planets/nom.svg</code>. Si tu écris juste un nom de fichier (ex: <code>neptune.svg</code>), on le préfixe automatiquement.</small>
           <div v-if="form.imageUrl" class="image-preview">
             <img 
-              :src="form.imageUrl" 
+              :src="normalizedImageUrl"
               alt="Aperçu"
               @error="handleImageError"
               @load="handleImageLoad"
@@ -126,27 +127,15 @@
               class="form-input"
               placeholder="1.0"
               :class="{ 'error': errors.radius }"
+              disabled
             />
             <span v-if="errors.radius" class="error-text">{{ errors.radius }}</span>
+            <small class="hint">Le rayon (taille 3D) n'est pas modifiable.</small>
           </div>
         </div>
 
         <div class="form-row">
-          <div class="form-group">
-            <label for="distanceFromSun">Distance du Soleil (UA) *</label>
-            <input
-              id="distanceFromSun"
-              v-model.number="form.distanceFromSun"
-              type="number"
-              step="0.1"
-              min="0"
-              required
-              class="form-input"
-              placeholder="1.0"
-              :class="{ 'error': errors.distanceFromSun }"
-            />
-            <span v-if="errors.distanceFromSun" class="error-text">{{ errors.distanceFromSun }}</span>
-          </div>
+          <!-- Distance du Soleil retirée de l'édition/creation -->
 
           <div class="form-group">
             <label for="orbitalPeriod">Période orbitale (jours)</label>
@@ -182,6 +171,7 @@
               class="form-input"
               placeholder="0"
               :class="{ 'error': errors.position }"
+              :disabled="isEditing"
             />
           </div>
 
@@ -195,6 +185,7 @@
               required
               class="form-input"
               placeholder="0"
+              :disabled="isEditing"
             />
           </div>
 
@@ -208,11 +199,12 @@
               required
               class="form-input"
               placeholder="0"
+              :disabled="isEditing"
             />
           </div>
         </div>
         
-        <div class="position-helper">
+        <div class="position-helper" v-if="!isEditing">
           <button type="button" @click="generateRandomPosition" class="btn btn-info">
             <i class="icon-dice"></i>
             Position aléatoire
@@ -222,6 +214,7 @@
             Centrer (0,0,0)
           </button>
         </div>
+        <small v-else class="hint">La position 3D n'est pas modifiable après création.</small>
       </div>
 
       <!-- Couleur et apparence -->
@@ -248,14 +241,14 @@
           </div>
 
           <div class="form-group">
-            <label for="temperature">Température (K)</label>
+            <label for="temperature">Température (°C)</label>
             <input
               id="temperature"
               v-model.number="form.temperature"
               type="number"
-              min="0"
+              step="any"
               class="form-input"
-              placeholder="288"
+              placeholder="0"
             />
           </div>
         </div>
@@ -303,7 +296,7 @@ const form = reactive({
   imageUrl: '',
   mass: 1,
   radius: 1,
-  distanceFromSun: 1,
+  // distanceFromSun retiré
   orbitalPeriod: 365,
   position: {
     x: 0,
@@ -320,8 +313,29 @@ const errors = reactive<Record<string, string>>({
   type: '',
   mass: '',
   radius: '',
-  distanceFromSun: '',
+  // distanceFromSun retiré
   position: ''
+})
+
+// Convertit "12,34" ou une chaîne avec virgule/unité en nombre JS
+function toNumber(value: any, fallback = 0) {
+  const s = String(value ?? '').replace(/,/g, '.')
+  const n = parseFloat(s)
+  return Number.isFinite(n) ? n : fallback
+}
+
+// URL image normalisée pour l'aperçu et l'envoi
+const normalizedImageUrl = computed(() => {
+  const raw = (form.imageUrl || '').trim()
+  if (!raw) return ''
+  // Corriger planètes -> planets si l'utilisateur tape en français
+  let p = raw.replace('images/planetes', 'images/planets').replace('/images/planetes', '/images/planets')
+  // Si commence par http ou /, on garde
+  if (/^(https?:)?\/\//.test(p) || p.startsWith('/')) return p
+  // Si commence par images/, ajouter le slash initial
+  if (p.startsWith('images/')) return '/' + p
+  // Sinon, on considère que c'est un nom de fichier
+  return `/images/planets/${p}`
 })
 
 // Validation du formulaire
@@ -356,10 +370,7 @@ const validateForm = () => {
     isValid = false
   }
 
-  if (form.distanceFromSun <= 0) {
-    errors.distanceFromSun = 'La distance doit être positive'
-    isValid = false
-  }
+  // distanceFromSun: champ retiré
 
   return isValid
 }
@@ -375,11 +386,11 @@ const loadPlanetData = async () => {
     const planet = await planetAPI.getPlanetById(route.params.id as string)
 
     // Extraire et convertir les données depuis le format API
-    const distanceValue = parseFloat(planet.distance?.replace(' UA', '') || '1')
-    const diameterValue = parseFloat(planet.diameter?.replace(' km', '') || '12756')
+    // distanceFromSun retiré
+    const diameterValue = toNumber(planet.diameter ?? '12756')
     const radiusValue = diameterValue / 12756 // Convertir diamètre en rayon Terre
-    const tempValue = parseFloat(planet.temperature?.replace(' K', '') || '288')
-    const orbitalValue = parseFloat(planet.orbitalPeriod?.replace(' jours', '') || '365')
+    const tempValue = toNumber(planet.temperature ?? '0')
+    const orbitalValue = toNumber(planet.orbitalPeriod ?? '365')
 
     // Remplir le formulaire avec les données existantes
     Object.assign(form, {
@@ -389,7 +400,7 @@ const loadPlanetData = async () => {
       imageUrl: planet.image || '',
       mass: 1, // Valeur par défaut si pas dans composition
       radius: radiusValue,
-      distanceFromSun: distanceValue,
+      // distanceFromSun retiré
       orbitalPeriod: orbitalValue,
       position: { ...planet.position },
       color: planet.color || '#FF6B35',
@@ -414,21 +425,26 @@ const submitForm = async () => {
 
   try {
     // Transformer les données du formulaire vers le format attendu par l'API
-    const planetData = {
+    const planetData: any = {
       name: form.name,
       type: form.type,
       description: form.description || '',
-      distance: `${form.distanceFromSun} UA`,
-      diameter: `${form.radius * 12756} km`, // Convertir rayon Terre vers km
-      position: form.position,
       color: form.color,
-      size: form.radius,
-      image: form.imageUrl || '/images/planets/default.svg',
+      image: normalizedImageUrl.value || '/images/planets/default.svg',
       discoveryDate: null,
       moons: 0,
       orbitalPeriod: form.orbitalPeriod ? `${form.orbitalPeriod} jours` : undefined,
-      temperature: form.temperature ? `${form.temperature} K` : undefined,
+      temperature: form.temperature || form.temperature === 0 ? `${form.temperature} °C` : undefined,
       composition: `Masse: ${form.mass} M⊕`
+    }
+
+    // Position et taille: uniquement à la création
+    if (!isEditing.value) {
+      planetData.position = form.position
+      planetData.size = form.radius
+      // Distance/Diamètre par défaut à la création
+      planetData.distance = '1 UA'
+      planetData.diameter = `${form.radius * 12756} km`
     }
 
     if (isEditing.value) {
@@ -444,11 +460,12 @@ const submitForm = async () => {
       router.push('/planets')
     }, 1500)
 
-  } catch (err) {
+  } catch (err: any) {
     console.error('Erreur lors de la sauvegarde:', err)
+    const serverMsg = err?.message ? `: ${err.message}` : ''
     error.value = isEditing.value 
-      ? 'Impossible de modifier la planète' 
-      : 'Impossible d\'ajouter la planète'
+      ? `Impossible de modifier la planète${serverMsg}` 
+      : `Impossible d'ajouter la planète${serverMsg}`
   } finally {
     submitting.value = false
   }
@@ -468,8 +485,10 @@ const centerPosition = () => {
 }
 
 // Gestion des images
-const handleImageError = () => {
+const handleImageError = (e?: Event) => {
   // Image par défaut si l'URL ne fonctionne pas
+  const img = (e?.target as HTMLImageElement | undefined)
+  if (img) img.src = '/images/planets/default.svg'
 }
 
 const handleImageLoad = () => {
