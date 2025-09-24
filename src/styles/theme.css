@@ -1,4 +1,6 @@
 :root {
+  --font-base: 'Space Grotesk', system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+  --font-display: 'Orbitron', 'Space Grotesk', system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
   --bg: #0b0f1a;
   --bg-2: #121826;
   --panel: rgba(255,255,255,0.06);
@@ -42,7 +44,10 @@ body::after {
 @keyframes twinkle { to { transform: translate3d(0, -10px, 0) } }
 
 /* Typography */
-* { font-family: 'Inter', 'Plus Jakarta Sans', system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif; }
+* { font-family: var(--font-base); }
+h1, h2, h3, .display { font-family: var(--font-display); letter-spacing: .6px }
+/* Brand in nav */
+.brand-link span { font-family: var(--font-display); letter-spacing: .8px }
 
 /* Utilities */
 .glass {
@@ -61,4 +66,3 @@ body::after {
 
 /* Links */
 a { color: var(--accent) }
-

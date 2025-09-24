@@ -8,8 +8,8 @@
                 @click="closeMenu"
             >
                 <img v-if="logoOk" class="brand-logo" :src="brandLogoSrc" alt="SpaceShop logo" @error="onLogoError" />
-                <PhPlanet v-else :size="32" />
-                <span>SpaceShop</span>
+                <PhPlanet v-else :size="64" />
+                <span>PlaneteHub</span>
             </router-link>
 
             <!-- Menu de navigation -->
@@ -159,7 +159,11 @@ function onLogoError() { logoOk.value = false }
         transition: all 0.2s ease;
     }
 
-    .brand-logo { width: 32px; height: 32px; object-fit: contain; display: block }
+    .brand-logo { width: 90px; height: 90px; object-fit: contain; display: block }
+
+    @media (max-width: 480px) {
+      .brand-logo { width: 44px; height: 44px }
+    }
 
     .brand-link:hover {
         color: #87CEEB;
