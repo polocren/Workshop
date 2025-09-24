@@ -1,0 +1,193 @@
+{
+  "planets": [
+    {
+      "id": "1",
+      "name": "Soleil",
+      "type": "Étoile",
+      "distance": "0 UA",
+      "diameter": "1,392,700 km",
+      "description": "Le Soleil est l'étoile centrale de notre système solaire. Il contient 99,86% de la masse du système solaire.",
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "color": "0xFFAA00",
+      "size": 3,
+      "image": "/images/planets/soleil.svg",
+      "discoveryDate": null,
+      "moons": 0,
+      "orbitalPeriod": null,
+      "temperature": "5778 K",
+      "composition": "Hydrogène (73%), Hélium (25%)"
+    },
+    {
+      "id": "2",
+      "name": "Mercure",
+      "type": "Planète rocheuse",
+      "distance": "0,39 UA",
+      "diameter": "4,879 km",
+      "description": "Mercure est la planète la plus proche du Soleil et la plus petite du système solaire.",
+      "position": {
+        "x": 6,
+        "y": 1,
+        "z": 2
+      },
+      "color": "0x8C6239",
+      "size": 0.8,
+      "image": "/images/planets/mercure.svg",
+      "discoveryDate": "Antiquité",
+      "moons": 0,
+      "orbitalPeriod": "88 jours terrestres",
+      "temperature": "167°C (moyenne)",
+      "composition": "Fer, Nickel, Roches"
+    },
+    {
+      "id": "3",
+      "name": "Vénus",
+      "type": "Planète rocheuse",
+      "distance": "0,72 UA",
+      "diameter": "12,104 km",
+      "description": "Vénus est la deuxième planète du système solaire. Elle est souvent appelée 'l'étoile du berger'.",
+      "position": {
+        "x": -7,
+        "y": -2,
+        "z": -5
+      },
+      "color": "0xFFCC33",
+      "size": 1.0,
+      "image": "/images/planets/venus.svg",
+      "discoveryDate": "Antiquité",
+      "moons": 0,
+      "orbitalPeriod": "225 jours terrestres",
+      "temperature": "464°C",
+      "composition": "Roches, Atmosphère de CO2"
+    },
+    {
+      "id": "4",
+      "name": "Terre",
+      "type": "Planète rocheuse",
+      "distance": "1 UA",
+      "diameter": "12,756 km",
+      "description": "La Terre est notre planète natale, la seule connue à abriter la vie dans l'univers.",
+      "position": {
+        "x": 9,
+        "y": 3,
+        "z": 8
+      },
+      "color": "0x2E8B57",
+      "size": 1.1,
+      "image": "/images/planets/terre.svg",
+      "discoveryDate": null,
+      "moons": 1,
+      "orbitalPeriod": "365,25 jours",
+      "temperature": "15°C (moyenne)",
+      "composition": "Roches, Eau, Atmosphère N2/O2"
+    },
+    {
+      "id": "5",
+      "name": "Mars",
+      "type": "Planète rocheuse",
+      "distance": "1,52 UA",
+      "diameter": "6,792 km",
+      "description": "Mars est surnommée la 'planète rouge' en raison de l'oxyde de fer présent à sa surface.",
+      "position": {
+        "x": -12,
+        "y": -1,
+        "z": 11
+      },
+      "color": "0xCD5C5C",
+      "size": 0.9,
+      "image": "/images/planets/mars.svg",
+      "discoveryDate": "Antiquité",
+      "moons": 2,
+      "orbitalPeriod": "687 jours terrestres",
+      "temperature": "-65°C (moyenne)",
+      "composition": "Roches, Oxyde de fer"
+    },
+    {
+      "id": "6",
+      "name": "Jupiter",
+      "type": "Géante gazeuse",
+      "distance": "5,20 UA",
+      "diameter": "142,984 km",
+      "description": "Jupiter est la plus grande planète du système solaire, une géante gazeuse avec plus de 80 lunes.",
+      "position": {
+        "x": 18,
+        "y": 4,
+        "z": -15
+      },
+      "color": "0xD2691E",
+      "size": 2.2,
+      "image": "/images/planets/jupiter.svg",
+      "discoveryDate": "Antiquité",
+      "moons": 95,
+      "orbitalPeriod": "11,86 années terrestres",
+      "temperature": "-110°C",
+      "composition": "Hydrogène, Hélium"
+    },
+    {
+      "id": "7",
+      "name": "Saturne",
+      "type": "Géante gazeuse",
+      "distance": "9,58 UA",
+      "diameter": "120,536 km",
+      "description": "Saturne est célèbre pour son système d'anneaux spectaculaire composé de glace et de roche.",
+      "position": {
+        "x": -25,
+        "y": -3,
+        "z": 20
+      },
+      "color": "0xFAD5A5",
+      "size": 2.0,
+      "image": "/images/planets/saturne.svg",
+      "discoveryDate": "Antiquité",
+      "moons": 146,
+      "orbitalPeriod": "29,46 années terrestres",
+      "temperature": "-140°C",
+      "composition": "Hydrogène, Hélium, Anneaux de glace"
+    },
+    {
+      "id": "8",
+      "name": "Uranus",
+      "type": "Géante de glace",
+      "distance": "19,18 UA",
+      "diameter": "51,118 km",
+      "description": "Uranus est une planète unique qui tourne sur le côté, probablement à cause d'une collision ancienne.",
+      "position": {
+        "x": 35,
+        "y": 2,
+        "z": 25
+      },
+      "color": "0x00FFFF",
+      "size": 1.5,
+      "image": "/images/planets/uranus.svg",
+      "discoveryDate": "1781",
+      "moons": 28,
+      "orbitalPeriod": "84 années terrestres",
+      "temperature": "-195°C",
+      "composition": "Eau, Méthane, Ammoniac"
+    },
+    {
+      "id": "9",
+      "name": "Neptune",
+      "type": "Géante de glace",
+      "distance": "30,07 UA",
+      "diameter": "49,528 km",
+      "description": "Neptune est la planète la plus éloignée du Soleil, avec des vents atteignant 2,100 km/h.",
+      "position": {
+        "x": -40,
+        "y": -4,
+        "z": -35
+      },
+      "color": "0x0000FF",
+      "size": 1.4,
+      "image": "/images/planets/neptune.svg",
+      "discoveryDate": "1846",
+      "moons": 16,
+      "orbitalPeriod": "165 années terrestres",
+      "temperature": "-200°C",
+      "composition": "Eau, Méthane, Ammoniac"
+    }
+  ]
+}

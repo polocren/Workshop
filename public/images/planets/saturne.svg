@@ -1,0 +1,16 @@
+<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="saturnGradient" cx="40%" cy="30%">
+      <stop offset="0%" style="stop-color:#FFFACD;stop-opacity:1" />
+      <stop offset="70%" style="stop-color:#FAD5A5;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#DEB887;stop-opacity:1" />
+    </radialGradient>
+  </defs>
+  <circle cx="100" cy="100" r="70" fill="url(#saturnGradient)" />
+  <ellipse cx="100" cy="80" rx="65" ry="6" fill="#F5DEB3" opacity="0.8" />
+  <ellipse cx="100" cy="120" rx="60" ry="5" fill="#F5DEB3" opacity="0.6" />
+  <!-- Anneaux -->
+  <ellipse cx="100" cy="100" rx="85" ry="8" fill="none" stroke="#E0E0E0" stroke-width="3" opacity="0.8" />
+  <ellipse cx="100" cy="100" rx="95" ry="10" fill="none" stroke="#D3D3D3" stroke-width="2" opacity="0.6" />
+  <ellipse cx="100" cy="100" rx="105" ry="12" fill="none" stroke="#C0C0C0" stroke-width="2" opacity="0.4" />
+</svg>
